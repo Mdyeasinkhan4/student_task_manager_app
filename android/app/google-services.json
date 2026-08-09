@@ -1,0 +1,118 @@
+{
+  "project_info": {
+    "project_number": "1046543232533",
+    "project_id": "batch-17-604d8",
+    "storage_bucket": "batch-17-604d8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046543232533:android:99ece52202a6e1311ca81c",
+        "android_client_info": {
+          "package_name": "com.example.live_score_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1046543232533-ll51qlcqcifotri0kaumahs7rbgp63ol.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHREj3Y9HgNauiatpZlr4Inl2dzg44Ous"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1046543232533-ll51qlcqcifotri0kaumahs7rbgp63ol.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1046543232533-3rjmch8bh3m7ln4hoaagddeg36r7ujos.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.liveScoreApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046543232533:android:ad87433818b45aaa1ca81c",
+        "android_client_info": {
+          "package_name": "com.example.student_task_manager_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1046543232533-ll51qlcqcifotri0kaumahs7rbgp63ol.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHREj3Y9HgNauiatpZlr4Inl2dzg44Ous"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1046543232533-ll51qlcqcifotri0kaumahs7rbgp63ol.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1046543232533-3rjmch8bh3m7ln4hoaagddeg36r7ujos.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.liveScoreApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046543232533:android:91e97f2c413fa0d71ca81c",
+        "android_client_info": {
+          "package_name": "com.example.task_manager_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1046543232533-ll51qlcqcifotri0kaumahs7rbgp63ol.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHREj3Y9HgNauiatpZlr4Inl2dzg44Ous"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1046543232533-ll51qlcqcifotri0kaumahs7rbgp63ol.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1046543232533-3rjmch8bh3m7ln4hoaagddeg36r7ujos.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.liveScoreApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
