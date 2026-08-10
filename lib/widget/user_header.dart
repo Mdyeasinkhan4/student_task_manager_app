@@ -3,7 +3,9 @@ import 'package:student_task_manager_app/controller/auth_controller.dart';
 import 'package:student_task_manager_app/utils/app_colors.dart';
 
 class UserHeader extends StatelessWidget {
-  const UserHeader({super.key});
+  final VoidCallback? onRefresh;
+
+  const UserHeader({super.key, this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +53,7 @@ class UserHeader extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: onRefresh,
             icon: const Icon(
               Icons.refresh,
               color: Colors.white,

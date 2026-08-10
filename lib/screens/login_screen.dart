@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_task_manager_app/providers/auth_provider.dart';
+import 'package:student_task_manager_app/screens/firebase_login_screen.dart';
 import 'package:student_task_manager_app/screens/forget_pass_email_screen.dart';
 import 'package:student_task_manager_app/screens/main_nav_screen.dart';
 import 'package:student_task_manager_app/screens/sign_up_screen.dart';
@@ -60,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const MainNavScreen()),
+          MaterialPageRoute(builder: (context) => const FirebaseLoginScreen()),
           (route) => false,
         );
       }
@@ -155,9 +156,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Text("Don't have an account?"),
                             TextButton(
                               onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpScreen()));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                                );
                               },
-                              child: Text('Sign up', style: TextStyle(color: AppColors.primaryColor)),
+                              child: Text('Sign Up', style: TextStyle(color: AppColors.primaryColor)),
                             ),
                           ],
                         ),
