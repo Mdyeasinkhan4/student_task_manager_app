@@ -16,6 +16,7 @@ class AddNewTaskScreen extends StatefulWidget {
 class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  String selectedPriority = 'Low';
   bool inProgress = false;
 
   Future<void> createTask() async {
@@ -32,7 +33,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
       url: TMUrls.CreateTaskURL,
       body: {
         "title": titleController.text.trim(),
-        "description": descriptionController.text.trim(),
+        "description": "${descriptionController.text.trim()} [[P:$selectedPriority]]",
         "status": "New",
       },
     );
@@ -58,6 +59,25 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     }
   }
 
+  Widget _priorityChip(String priority) {
+    bool isSelected = selectedPriority == priority;
+    return ChoiceChip(
+      label: Text(priority),
+      selected: isSelected,
+      onSelected: (selected) {
+        if (selected) {
+          setState(() {
+            selectedPriority = priority;
+          });
+        }
+      },
+      selectedColor: AppColors.primaryColor,
+      labelStyle: TextStyle(
+        color: isSelected ? Colors.white : Colors.black,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,6 +99,18 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                 controller: descriptionController,
                 maxLines: 6,
                 decoration: const InputDecoration(hintText: 'Description'),
+              ),
+              const SizedBox(height: 16),
+              const Text('Priority', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  _priorityChip('Low'),
+                  const SizedBox(width: 8),
+                  _priorityChip('Medium'),
+                  const SizedBox(width: 8),
+                  _priorityChip('High'),
+                ],
               ),
               const SizedBox(height: 16),
               Visibility(

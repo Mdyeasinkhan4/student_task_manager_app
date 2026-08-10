@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import 'package:student_task_manager_app/providers/auth_provider.dart';
 import 'package:student_task_manager_app/screens/firebase_signup_screen.dart';
 import 'package:student_task_manager_app/screens/main_nav_screen.dart';
 import 'package:student_task_manager_app/widgets/custom_button.dart';
@@ -63,28 +64,18 @@ class _FirebaseLoginScreenState extends State<FirebaseLoginScreen> {
     });
 
     try {
-      await GoogleSignIn.instance.initialize();
-      final GoogleSignInAccount googleUser = await GoogleSignIn.instance.authenticate();
-      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
-      final String googleIdToken = googleAuth.idToken ?? '';
-      if (googleIdToken.isEmpty) {
-        await _showMessage('Unable to obtain Google ID token.');
-        return;
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final success = await authProvider.signInWithGoogle();
+
+      if (success) {
+        if (!mounted) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const MainNavScreen()),
+        );
+      } else {
+        await _showMessage('Google login failed.');
       }
-
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        idToken: googleIdToken,
-      );
-
-      await FirebaseAuth.instance.signInWithCredential(credential);
-
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const MainNavScreen()),
-      );
-    } on FirebaseAuthException catch (error) {
-      await _showMessage(error.message ?? 'Google login failed.');
     } catch (error) {
       await _showMessage('Google login failed. Please try again.');
     } finally {
@@ -155,12 +146,59 @@ class _FirebaseLoginScreenState extends State<FirebaseLoginScreen> {
                   isLoading: _isLoading,
                   onPressed: _loginWithEmail,
                 ),
+                const SizedBox(height: 32),
+                Row(
+                  children: const [
+                    Expanded(child: Divider()),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text('OR', style: TextStyle(color: Colors.grey)),
+                    ),
+                    Expanded(child: Divider()),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'Social Sign In',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.blueGrey,
+                    letterSpacing: 1.2,
+                  ),
+                ),
                 const SizedBox(height: 16),
-                CustomButton(
-                  text: 'Continue with Google',
-                  icon: const Icon(Icons.g_mobiledata, color: Colors.red),
-                  outlined: true,
-                  onPressed: _loginWithGoogle,
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  child: InkWell(
+                    onTap: _loginWithGoogle,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.network(
+                            'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png',
+                            height: 24,
+                          ),
+                          const SizedBox(width: 12),
+                          const Text(
+                            'Continue with Google',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 24),
                 Row(

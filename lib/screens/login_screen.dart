@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const FirebaseLoginScreen()),
+          MaterialPageRoute(builder: (context) => const MainNavScreen()),
           (route) => false,
         );
       }

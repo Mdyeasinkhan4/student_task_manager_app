@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:student_task_manager_app/controller/auth_controller.dart';
+import 'package:provider/provider.dart';
+import 'package:student_task_manager_app/providers/auth_provider.dart';
 import 'package:student_task_manager_app/utils/app_colors.dart';
 
 class TmAppbar extends StatelessWidget implements PreferredSizeWidget {
@@ -35,12 +36,16 @@ class TmAppbar extends StatelessWidget implements PreferredSizeWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Text(
-            AuthController.userData?.email ?? '',
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 12,
-            ),
+          Consumer<AuthProvider>(
+            builder: (context, authProvider, child) {
+              return Text(
+                authProvider.user?.email ?? '',
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 12,
+                ),
+              );
+            },
           ),
         ],
       ),

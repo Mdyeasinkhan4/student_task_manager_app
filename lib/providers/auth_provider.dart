@@ -1,4 +1,5 @@
 ﻿import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:student_task_manager_app/controller/auth_controller.dart';
@@ -15,7 +16,6 @@ class AuthProvider extends ChangeNotifier {
   String? _token;
   bool _isLoading = false;
   bool _isInitializing = false;
-  bool _googleSignInInitialized = false;
 
   UserModel? get user => _user;
   bool get isAuthenticated => _token != null && _user != null;
@@ -27,11 +27,6 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      if (!_googleSignInInitialized) {
-        await _googleSignIn.initialize();
-        _googleSignInInitialized = true;
-      }
-
       await AuthController.getUserData();
       _user = AuthController.userData;
       _token = AuthController.accessToken;
@@ -122,6 +117,7 @@ class AuthProvider extends ChangeNotifier {
     required String firstName,
     required String lastName,
     required String mobile,
+    String? photo,
     String? password,
   }) async {
     if (_user == null) return false;
@@ -137,6 +133,10 @@ class AuthProvider extends ChangeNotifier {
         'mobile': mobile,
       };
 
+      if (photo != null && photo.isNotEmpty) {
+        body['photo'] = photo;
+      }
+
       if (password != null && password.isNotEmpty) {
         body['password'] = password;
       }
@@ -146,6 +146,8 @@ class AuthProvider extends ChangeNotifier {
         body: body,
       );
 
+      debugPrint('Profile Update Response: ${response.responseCode} - ${response.responseData}');
+
       if (response.isSuccess) {
         final updatedUser = UserModel(
           sId: _user?.sId,
@@ -153,6 +155,7 @@ class AuthProvider extends ChangeNotifier {
           firstName: firstName,
           lastName: lastName,
           mobile: mobile,
+          photo: photo ?? _user?.photo,
         );
         await AuthController.updateUserData(updatedUser);
         _user = updatedUser;
@@ -174,7 +177,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       await AuthController.clearUserData();
       await _firebaseAuth.signOut();
-      if (_googleSignInInitialized) {
+      if (!kIsWeb) {
         await _googleSignIn.signOut();
       }
     } catch (error, stackTrace) {
@@ -188,82 +191,59 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<bool> signInWithGoogle() async {
-
-    
     _isLoading = true;
     notifyListeners();
 
     try {
-      if (!_googleSignInInitialized) {
+      UserCredential userCredential;
+      
+      if (kIsWeb) {
+        // Web flow
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        userCredential = await _firebaseAuth.signInWithPopup(googleProvider);
+      } else {
+        // Mobile flow
         await _googleSignIn.initialize();
-        _googleSignInInitialized = true;
+        final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
+        final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+        
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          idToken: googleAuth.idToken,
+        );
+        userCredential = await _firebaseAuth.signInWithCredential(credential);
       }
 
-      final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
-      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
-      final String? idToken = googleAuth.idToken;
-
-      if (idToken == null || idToken.isEmpty) {
-        debugPrint('Google sign-in failed: ID token is null or empty.');
-        return false;
-      }
-
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        idToken: idToken,
-      );
-
-      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
       final User? firebaseUser = userCredential.user;
-
       if (firebaseUser == null) {
-        debugPrint('Firebase returned no user after Google sign-in.');
+        _isLoading = false;
+        notifyListeners();
         return false;
       }
 
       final String token = await firebaseUser.getIdToken() ?? '';
-      if (token.isEmpty) {
-        debugPrint('Firebase ID token is empty.');
-        return false;
-      }
-
       final String displayName = firebaseUser.displayName ?? '';
-      final List<String> nameParts = displayName
-          .trim()
-          .split(RegExp(r'\s+'))
-          .where((name) => name.isNotEmpty)
-          .toList();
-      final String firstName = nameParts.isNotEmpty ? nameParts.first : '';
-      final String lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
-
+      final List<String> nameParts = displayName.split(' ');
+      
       final UserModel user = UserModel(
         sId: firebaseUser.uid,
-        email: firebaseUser.email ?? googleUser.email,
-        firstName: firstName,
-        lastName: lastName,
+        email: firebaseUser.email,
+        firstName: nameParts.isNotEmpty ? nameParts.first : '',
+        lastName: nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
         mobile: firebaseUser.phoneNumber,
-        createdDate: firebaseUser.metadata.creationTime?.toIso8601String(),
       );
 
       await AuthController.saveUserData(user, token);
       _user = user;
       _token = token;
-      return true;
-    } on GoogleSignInException catch (error, stackTrace) {
-      debugPrint('Google sign-in exception: $error');
-      debugPrint('$stackTrace');
-      return false;
-    } on FirebaseAuthException catch (error, stackTrace) {
-      debugPrint('Firebase authentication error: ${error.code}');
-      debugPrint(error.message ?? 'No Firebase error message.');
-      debugPrint('$stackTrace');
-      return false;
-    } catch (error, stackTrace) {
-      debugPrint('Google sign-in error: $error');
-      debugPrint('$stackTrace');
-      return false;
-    } finally {
+      
       _isLoading = false;
       notifyListeners();
+      return true;
+    } catch (error) {
+      debugPrint('Google Sign-In Error: $error');
+      _isLoading = false;
+      notifyListeners();
+      return false;
     }
   }
 }

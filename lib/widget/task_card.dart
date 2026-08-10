@@ -98,6 +98,19 @@ class _TaskCardState extends State<TaskCard> {
     }
   }
 
+  Color priorityColor() {
+    switch (widget.taskModel.priority) {
+      case "High":
+        return Colors.red;
+      case "Medium":
+        return Colors.orange;
+      case "Low":
+        return Colors.green;
+      default:
+        return Colors.blue;
+    }
+  }
+
   void showStatusDialog() {
     showDialog(
       context: context,
@@ -216,6 +229,34 @@ class _TaskCardState extends State<TaskCard> {
                     ),
                   ),
                 ),
+                const SizedBox(width: 8),
+                if (widget.taskModel.priority != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: priorityColor().withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: priorityColor()),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.flag, size: 12, color: priorityColor()),
+                        const SizedBox(width: 4),
+                        Text(
+                          widget.taskModel.priority!,
+                          style: TextStyle(
+                            color: priorityColor(),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 const Spacer(),
                 updating
                     ? const SizedBox(

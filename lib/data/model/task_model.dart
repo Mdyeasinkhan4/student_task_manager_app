@@ -5,6 +5,7 @@ class TaskModel {
   String? status;
   String? email;
   String? createdDate;
+  String? priority;
 
   TaskModel({
     this.sId,
@@ -13,12 +14,24 @@ class TaskModel {
     this.status,
     this.email,
     this.createdDate,
+    this.priority,
   });
 
   TaskModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     title = json['title'];
-    description = json['description'];
+    
+    // Description থেকে priority আলাদা করার লজিক
+    String rawDescription = json['description'] ?? '';
+    if (rawDescription.contains('[[P:')) {
+      int startIndex = rawDescription.lastIndexOf('[[P:');
+      description = rawDescription.substring(0, startIndex).trim();
+      priority = rawDescription.substring(startIndex + 4, rawDescription.length - 2);
+    } else {
+      description = rawDescription;
+      priority = 'Low'; // ডিফল্ট
+    }
+    
     status = json['status'];
     email = json['email'];
     createdDate = json['createdDate'];
@@ -32,6 +45,7 @@ class TaskModel {
     data['status'] = status;
     data['email'] = email;
     data['createdDate'] = createdDate;
+    data['priority'] = priority;
     return data;
   }
 }

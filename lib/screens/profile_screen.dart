@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:student_task_manager_app/providers/auth_provider.dart';
 
@@ -16,6 +19,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  
+  XFile? _pickedImage;
+  String? _base64Image;
   bool inProgress = false;
 
   @override
@@ -26,6 +32,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     firstNameController.text = user?.firstName ?? '';
     lastNameController.text = user?.lastName ?? '';
     mobileController.text = user?.mobile ?? '';
+    _base64Image = user?.photo;
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+      maxWidth: 150,
+      maxHeight: 150,
+    );
+    if (image != null) {
+      final bytes = await image.readAsBytes();
+      setState(() {
+        _pickedImage = image;
+        _base64Image = base64Encode(bytes);
+      });
+    }
   }
 
   Future<void> updateProfile() async {
@@ -37,6 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       firstName: firstNameController.text,
       lastName: lastNameController.text,
       mobile: mobileController.text,
+      photo: _base64Image,
       password: passwordController.text.isNotEmpty ? passwordController.text : null,
     );
 
@@ -51,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Update failed')),
+          const SnackBar(content: Text('Update failed. Image might be too large or API error.')),
         );
       }
     }
@@ -87,24 +112,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey.shade300,
-                  child: Icon(Icons.person, color: Colors.grey.shade600, size: 34),
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: CircleAvatar(
+                    radius: 35,
+                    backgroundColor: Colors.grey.shade300,
+                    backgroundImage: _pickedImage != null
+                        ? FileImage(File(_pickedImage!.path))
+                        : (_base64Image != null && _base64Image!.isNotEmpty)
+                            ? MemoryImage(base64Decode(_base64Image!.split(',').last)) as ImageProvider
+                            : null,
+                    child: (_pickedImage == null && (_base64Image == null || _base64Image!.isEmpty))
+                        ? Icon(Icons.add_a_photo, color: Colors.grey.shade600, size: 30)
+                        : null,
+                  ),
                 ),
                 const SizedBox(width: 14),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${firstNameController.text} ${lastNameController.text}',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
-                    Text(
-                      emailController.text,
-                      style: const TextStyle(color: Colors.grey, fontSize: 13),
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${firstNameController.text} ${lastNameController.text}',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      Text(
+                        emailController.text,
+                        style: const TextStyle(color: Colors.grey, fontSize: 13),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -119,10 +156,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               visible: !inProgress,
               replacement: const Center(child: CircularProgressIndicator()),
               child: FilledButton(
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 45),
+                ),
                 onPressed: () {
                   updateProfile();
                 },
-                child: const Icon(Icons.arrow_circle_right_outlined, size: 25),
+                child: const Text('Update Profile'),
               ),
             ),
           ],
