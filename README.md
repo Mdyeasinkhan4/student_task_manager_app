@@ -24,15 +24,17 @@ A powerful and user-friendly Task Management application designed to help studen
 
 ## 📸 Screenshots
 
-*(Replace these placeholders with your project's actual screenshots)*
-
-| Login Screen | Dashboard | Add New Task |
+| 01. Splash Screen | 02. Login Screen | 03. Sign Up Screen |
 | :---: | :---: | :---: |
-| ![Login](https://via.placeholder.com/200x400?text=Login+Screen) | ![Dashboard](https://via.placeholder.com/200x400?text=Dashboard) | ![Add Task](https://via.placeholder.com/200x400?text=Add+Task+Screen) |
+| ![Splash](https://raw.githubusercontent.com/Mdyeasinkhan4/student_task_manager_app/fea5755b84d0951cc9b04a8d192a2a119e02122a/preview_images/01.splashSC.png) | ![Login](https://raw.githubusercontent.com/Mdyeasinkhan4/student_task_manager_app/fea5755b84d0951cc9b04a8d192a2a119e02122a/preview_images/02.LoginSC.png) | ![SignUp](https://raw.githubusercontent.com/Mdyeasinkhan4/student_task_manager_app/fea5755b84d0951cc9b04a8d192a2a119e02122a/preview_images/03.SignUpSC.png) |
 
-| Profile Section | Task Priority | Web View |
+| 04. Tasks Dashboard | 05. Categories | 06. Calendar |
 | :---: | :---: | :---: |
-| ![Profile](https://via.placeholder.com/200x400?text=Profile+Update) | ![Priority](https://via.placeholder.com/200x400?text=Priority+Flag) | ![Web View](https://via.placeholder.com/400x200?text=Responsive+Web+View) |
+| ![Tasks](https://raw.githubusercontent.com/Mdyeasinkhan4/student_task_manager_app/fea5755b84d0951cc9b04a8d192a2a119e02122a/preview_images/05.TasksSC.png) | ![Categories](https://raw.githubusercontent.com/Mdyeasinkhan4/student_task_manager_app/fea5755b84d0951cc9b04a8d192a2a119e02122a/preview_images/06.CategoriesSC.png) | ![Calendar](https://raw.githubusercontent.com/Mdyeasinkhan4/student_task_manager_app/fea5755b84d0951cc9b04a8d192a2a119e02122a/preview_images/07.CalenderSC.png) |
+
+| 07. Profile | 08. Add Task | 09. Dark Theme |
+| :---: | :---: | :---: |
+| ![Profile](https://raw.githubusercontent.com/Mdyeasinkhan4/student_task_manager_app/fea5755b84d0951cc9b04a8d192a2a119e02122a/preview_images/08.ProfileSC.png) | ![AddTask](https://raw.githubusercontent.com/Mdyeasinkhan4/student_task_manager_app/fea5755b84d0951cc9b04a8d192a2a119e02122a/preview_images/09.AddTaskSC.png) | ![DarkTheme](https://raw.githubusercontent.com/Mdyeasinkhan4/student_task_manager_app/fea5755b84d0951cc9b04a8d192a2a119e02122a/preview_images/10.DarkThemeSC.png) |
 
 ---
 
@@ -51,7 +53,7 @@ A powerful and user-friendly Task Management application designed to help studen
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/student_task_manager_app.git
+   git clone https://github.com/Mdyeasinkhan4/student_task_manager_app.git
    ```
 
 2. **Install dependencies:**
