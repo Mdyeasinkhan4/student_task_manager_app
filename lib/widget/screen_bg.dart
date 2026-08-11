@@ -11,13 +11,19 @@ class ScreenBG extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Stack(
       children: [
-        SvgPicture.asset(
-          AssetPath.backgroundSVG,
-          width: double.infinity,
-          height: double.infinity,
-          fit: BoxFit.cover,
+        Container(color: Theme.of(context).scaffoldBackgroundColor),
+        Opacity(
+          opacity: isDark ? 0.05 : 1.0,
+          child: SvgPicture.asset(
+            AssetPath.backgroundSVG,
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
+          ),
         ),
         SafeArea(child: child),
       ],

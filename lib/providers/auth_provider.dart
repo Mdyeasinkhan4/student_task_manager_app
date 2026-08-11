@@ -10,7 +10,7 @@ import 'package:student_task_manager_app/utils/urls.dart';
 
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   UserModel? _user;
   String? _token;
@@ -198,16 +198,22 @@ class AuthProvider extends ChangeNotifier {
       UserCredential userCredential;
       
       if (kIsWeb) {
-        // Web flow
+        // Web flow using Popup
         GoogleAuthProvider googleProvider = GoogleAuthProvider();
         userCredential = await _firebaseAuth.signInWithPopup(googleProvider);
       } else {
         // Mobile flow
-        await _googleSignIn.initialize();
-        final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
-        final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+        final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+        if (googleUser == null) {
+          _isLoading = false;
+          notifyListeners();
+          return false;
+        }
+
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
         
         final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
         userCredential = await _firebaseAuth.signInWithCredential(credential);
